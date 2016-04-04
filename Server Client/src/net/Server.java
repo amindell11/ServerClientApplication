@@ -8,10 +8,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
-import com.google.gson.Gson;
 
 public class Server {
-	static Gson jsonParser;
+	//static Gson jsonParser;
 	static final boolean REQUIRE_UNIQUE_CLIENTS = false;
 	HashMap<String, Thread> clients;
 	int port;
