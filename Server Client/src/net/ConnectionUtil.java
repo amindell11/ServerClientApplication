@@ -9,12 +9,12 @@ import java.net.InetSocketAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,38 +30,67 @@ public class ConnectionUtil {
 		}
 
 	}
-
-	public static ArrayList<String> getAvailibleIPs() {
-		final ArrayList<String> addresses = new ArrayList<>();
-		int xend=16;
-		int yend=255;
-		for (int x = 1; x < xend; x++) {
-			for (int y = 0; y < yend; y++) {
-				final String s = "10.208." + x + "." + y;
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							if (InetAddress.getByName(s).isReachable(2000)) {
-								addresses.add(s);
-							}
-						} catch (UnknownHostException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}).start();
+	public static ArrayList<String> getAllIPs(){
+		ArrayList<String> ip=new ArrayList<>();
+		for(int x=0;x<40;x++){
+			for(int y=0;y<255;y++){
+				ip.add("10.208." + x + "." + y);
 			}
 		}
+		return ip;
+	}
+	public static List<String> getAvailibleIPs() {
+		final List<String> addresses=Collections.synchronizedList(new ArrayList<String>());
+		ArrayList<ArrayList<String>> s=subdivideArray(getAllIPs(),2000);
+		for(final ArrayList<String> list:s){
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					addresses.addAll(getAvailibleIPs(list));
+				}
+			}).start();
+		}
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return addresses;
 	}
-
+	public static ArrayList<String> getAvailibleIPs(ArrayList<String> ips){
+		ArrayList<String> list=new ArrayList<>();
+		for(String s:ips){
+			try {
+				if(InetAddress.getByName(s).isReachable(2000))list.add(s);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+	private static ArrayList<ArrayList<String>> subdivideArray(List<String> list,
+			int threads) {
+		ArrayList<ArrayList<String>> listOfLists=new ArrayList<>();
+		int itemsPerlist=list.size()/threads;
+		if(list.size()<threads)itemsPerlist=1;
+		System.out.println("ipl"+itemsPerlist);
+		int index = 0;
+		int listIndex=0;
+		ArrayList<String> listItem = new ArrayList<>();
+		while(index<list.size()){
+			if(listIndex>=itemsPerlist){
+				listOfLists.add(listItem);
+				listItem=new ArrayList<>();
+				listIndex=0;
+			}else{
+				System.out.println(list.get(index));
+				listItem.add(list.get(index));
+				listIndex++;
+				index++;
+			}
+		}
+		return listOfLists;
+	}
 	public static ArrayList<String> getAvailibleIPsARP() throws IOException {
 		System.setProperty("java.net.preferIPv4Stack", "true");
 		InetAddress broadcast = getBroadcastAddress();
@@ -80,24 +109,46 @@ public class ConnectionUtil {
 		return addresses;
 	}
 
-	public static HashMap<String, String> getOpenServers(int portNumber) {
-		HashMap<String, String> openServers = new HashMap<>();
-		for (String host : getAvailibleIPs()) {
-			if (testConnection(host, portNumber, 0, 20)) {
-				openServers.put(host, getServerName(host, portNumber, 100, 150));
+	public static Map<String, String> getOpenServers(final int portNumber) {
+		List<String> list1=getAvailibleIPs();
+		System.out.println("available ips: "+list1);
+		ArrayList<ArrayList<String>> s=subdivideArray(list1,1000);
+		System.out.println(s);
+			final Map<String, String> openServers=Collections.synchronizedMap(new HashMap<String,String>());
+			for(final ArrayList<String> list:s){
+				new Thread(new Runnable(){
+					@Override
+					public void run() {
+						for(String host:getOpenServers(list,portNumber)){
+							openServers.put(host, getServerName(host, portNumber, 100, 150));
+						}
+					}
+				}).start();
 			}
-		}
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		return openServers;
 
 	}
-
+	public static List<String> getOpenServers(List<String> servers,int port){
+		ArrayList<String> list=new ArrayList<>();
+		for(String s:servers){
+				if (testConnection(s, port, 0, 20)) {
+					System.out.println(true);
+					list.add(s);
+				}
+		}
+		return list;
+	}
 	public static boolean testConnection(String hostName, int port,
 			int timeOut, long msgTimeOut) {
 		try {
 			HeadedMessage msg = singleExchangeConnection(hostName, port,
 					timeOut, msgTimeOut, new HeadedMessage(InfoHeader.PROBE,
 							null));
-			// System.out.println("Probe returned "+msg.getFullMessageString()+", validating message");
 			boolean didProbeReturn = msg != null
 					&& msg.getHeader() == InfoHeader.PROBE_RESPONSE;
 			return didProbeReturn;

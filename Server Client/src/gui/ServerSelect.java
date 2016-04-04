@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
@@ -21,7 +22,7 @@ import net.ConnectionUtil;
  * @author ari
  */
 public class ServerSelect extends ComponentPanel {
-	HashMap<String, String> openServers;
+	Map<String, String> openServers;
 	/**
 	 * Creates new form ServerSelect
 	 */

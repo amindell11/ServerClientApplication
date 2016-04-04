@@ -3,6 +3,7 @@ package gui;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import net.Client;
@@ -11,7 +12,7 @@ import net.ConnectionUtil;
 public class ClientWrapper {
 	public static void main(String[] arguments) throws UnknownHostException {
 		String hostName=null;//TODO error handling
-		HashMap<String,String> servers=ConnectionUtil.getOpenServers(Config.PORT);
+		Map<String,String> servers=ConnectionUtil.getOpenServers(Config.PORT);
 		if(servers.size()==0){
 			hostName=manualServerInput();
 		}else if(servers.size()>1){
@@ -35,7 +36,7 @@ public class ClientWrapper {
 		return hostName;
 
 	}
-	public static String serverSelection(HashMap<String,String> servers){
+	public static String serverSelection(Map<String, String> servers){
 		Scanner inp = new Scanner(System.in);
 		System.out.println("please select from the following open servers: \n"+servers.keySet());
 		String hostName = inp.nextLine().trim();
