@@ -21,8 +21,11 @@ public class HeadedMessage {
 			System.err.println("Error in message\nMessage: "+codedMsg+"-not long enough to contain an infoCode");
 			return null;
 		}
-		String code=codedMsg.substring(0,InfoHeader.HEADER_LENGTH);
+		InfoHeader code=InfoHeader.parseInfoCode(codedMsg.substring(0,InfoHeader.HEADER_LENGTH));
+		if(code==null){
+			return null;
+		}
 		String msg=codedMsg.substring(InfoHeader.HEADER_LENGTH);
-		return new HeadedMessage(InfoHeader.parseInfoCode(code),msg);
+		return new HeadedMessage(code,msg);
 	}
 }

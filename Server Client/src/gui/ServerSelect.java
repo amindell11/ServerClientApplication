@@ -5,6 +5,8 @@
  */
 package gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -19,7 +21,7 @@ import net.ConnectionUtil;
  * @author ari
  */
 public class ServerSelect extends ComponentPanel {
-
+	HashMap<String, String> openServers;
 	/**
 	 * Creates new form ServerSelect
 	 */
@@ -40,22 +42,12 @@ public class ServerSelect extends ComponentPanel {
 		jList1 = new javax.swing.JList<>();
 		jButton1 = new javax.swing.JButton();
 
-		jRadioButtonMenuItem1.setSelected(true);
-		jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
-
 		jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
 		jLabel1.setText("Server Select");
-		ArrayList<String> strings = new ArrayList<>();
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				HashMap<String, String> openServers = ConnectionUtil.getOpenServers(Config.PORT);
-				strings.addAll(openServers.values());
-				frame.repaint();
-			}
-
-		}).start();
+		final ArrayList<String> strings = new ArrayList<>();
+		openServers = ConnectionUtil.getOpenServers(Config.PORT);
+		strings.addAll(openServers.values());
+		System.out.println(strings);
 		jList1.setModel(new javax.swing.AbstractListModel<String>() {
 
 			public int getSize() {
@@ -73,7 +65,14 @@ public class ServerSelect extends ComponentPanel {
 		jScrollPane1.setViewportView(jList1);
 
 		jButton1.setText("Select");
+		jButton1.addActionListener(new ActionListener(){
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JButton1ActionPerformed(e);
+			}
+		
+		});
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
 		this.setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -91,6 +90,11 @@ public class ServerSelect extends ComponentPanel {
 				.addGap(18, 18, 18).addComponent(jButton1).addContainerGap(71, Short.MAX_VALUE)));
 	}
 
+
+	private void JButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+		frame.createClient(openServers.get(jList1.getSelectedValue()));
+	}
+	
 	// Variables declaration - do not modify
 	private javax.swing.JButton jButton1;
 	private javax.swing.JLabel jLabel1;

@@ -36,7 +36,6 @@ public class ClientThread extends Thread {
 					}
 					handleMessage(line);
 				}else{
-					ConnectionUtil.sendMessage(out, InfoHeader.PROBE,null);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

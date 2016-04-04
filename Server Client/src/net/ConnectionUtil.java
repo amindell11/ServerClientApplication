@@ -42,7 +42,7 @@ public class ConnectionUtil {
 			String line;
 			while ((line = in.readLine()) != null) {
 				String host = parseIpAddress(line);
-				if (testConnection(host, portNumber, 40,100)) {
+				if (testConnection(host, portNumber, 150,100)) {
 					openServers.put(host,getServerName(host, portNumber, 40,100));
 				}
 			}
@@ -54,7 +54,7 @@ public class ConnectionUtil {
 	public static boolean testConnection(String hostName, int port, int timeOut, long msgTimeOut) {
 		try {
 			HeadedMessage msg=singleExchangeConnection(hostName,port,timeOut,msgTimeOut,new HeadedMessage(InfoHeader.PROBE,null));
-			System.out.println("Probe returned "+msg.getFullMessageString()+", validating message");
+			//System.out.println("Probe returned "+msg.getFullMessageString()+", validating message");
 			boolean didProbeReturn=msg != null&&msg.getHeader()==InfoHeader.PROBE_RESPONSE;
 			return didProbeReturn;
 		} catch (IOException e) {

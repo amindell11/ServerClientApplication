@@ -110,7 +110,8 @@ public class ServerCreationPanel extends ComponentPanel {
     }// </editor-fold>                        
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
+        frame.createServer(jTextField1.getText());
+        frame.createClient("0.0.0.0");
     }                                        
 	private void jSlider1StateChanged(ChangeEvent evt) {
 		playerLabel.setText(jSlider1.getValue()+"");
