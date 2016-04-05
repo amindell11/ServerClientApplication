@@ -47,7 +47,7 @@ public class ServerSelect extends ComponentPanel {
 		jLabel1.setText("Server Select");
 		final ArrayList<String> strings = new ArrayList<>();
 		openServers = ConnectionUtil.getOpenServers(Config.PORT);
-		strings.addAll(openServers.values());
+		strings.addAll(openServers.keySet());
 		System.out.println(strings);
 		jList1.setModel(new javax.swing.AbstractListModel<String>() {
 
@@ -93,7 +93,9 @@ public class ServerSelect extends ComponentPanel {
 
 
 	private void JButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+		System.out.println("val"+jList1.getSelectedValue());
 		frame.createClient(openServers.get(jList1.getSelectedValue()));
+		System.out.println(openServers);
 	}
 	
 	// Variables declaration - do not modify
