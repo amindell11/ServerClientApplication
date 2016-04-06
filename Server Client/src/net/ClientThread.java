@@ -7,11 +7,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientThread extends Thread {
+	static final int timeOut=3000;
 	protected Socket socket;
 	InputStream inp;
 	BufferedReader brinp;
 	PrintWriter out;
 	Server server;
+	int timeSinceCommed;
 
 	public ClientThread(Socket clientSocket,Server server) {
 		this.socket = clientSocket;
@@ -30,19 +32,22 @@ public class ClientThread extends Thread {
 		while (!isInterrupted()&&!out.checkError()) {
 			try {
 				if (brinp.ready()) {
+					timeSinceCommed=0;
 					line = brinp.readLine();
 					if (line == null) {
 						return;
 					}
 					handleMessage(line);
+				}else if(timeSinceCommed>timeOut){
+					ConnectionUtil.sendMessage(out, InfoHeader.PROBE,null);
 				}else{
+					timeSinceCommed++;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				return;
 			}
 		}
-		System.out.println("Closing thread "+this);
 	}
 	public void handleMessage(String message) throws IOException{
 		HeadedMessage codedMsg=HeadedMessage.toHeadedMessage(message);

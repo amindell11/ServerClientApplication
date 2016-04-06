@@ -1,6 +1,10 @@
 package gui;
 
+import java.awt.TextArea;
+import java.io.PrintStream;
+
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 
 import net.Client;
 import net.Config;
@@ -25,10 +29,10 @@ public class ApplicationManager extends JFrame{
     	pack();
     	repaint();
     }
-	public void createServer(final String serverName) {
+	public Server createServer(final String serverName) {
+		final Server server=new Server(Config.PORT, serverName);;
 		Thread serverThread = new Thread(new Runnable() {
 			public void run() {
-				Server server = new Server(Config.PORT, serverName);
 				if (server.init()) {
 					while (true) {
 						server.update();
@@ -37,18 +41,24 @@ public class ApplicationManager extends JFrame{
 			}
 		});
 		serverThread.start();
+		return server;
 	}
-	public void createClient(final String host){
+	public Client createClient(final String host){
+		final Client client = new Client();
 		Thread localClientThread = new Thread(new Runnable() {
 			public void run() {
-				Client client = new Client();
 				client.openConnection(host, Config.PORT);
 				while (client.isConnected()) {
-					client.update();
+					//client.update();
 				}
 			}
 		});
 		localClientThread.start();
+		return client;
 	}
-	
+	public void reallocatePrint(TextArea textArea1) {
+		PrintStream printStream = new PrintStream(new CustomOutputStream(textArea1));
+		System.setOut(printStream);
+		System.setErr(printStream);
+	}
 }

@@ -86,11 +86,11 @@ public class HomePanel extends ComponentPanel {
     }// </editor-fold>                        
 
     private void joinGameButtonActionPerformed(java.awt.event.ActionEvent evt) {              
-		frame.enterScreen(new ServerSelect(frame));
+		frame.enterScreen(new LoadingServerPanel(frame));
     }                                              
 
     private void directConnectButtonActionPerformed(java.awt.event.ActionEvent evt) { 
-
+    	frame.enterScreen(new DirectConnect(frame));
     }                                
 	private void createGameButtonActionPerformed(ActionEvent evt) {
 		frame.enterScreen(new ServerCreationPanel(frame));

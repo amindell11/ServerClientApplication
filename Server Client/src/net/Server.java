@@ -98,4 +98,14 @@ public class Server {
 			server.update();
 		}
 	}
+	public void close(){
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		HashMap<String, Thread> client=new HashMap<>();
+		hasBeenInitialized=false;
+		ServerSocket serverSocket = null;
+	}
 }
