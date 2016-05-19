@@ -13,11 +13,12 @@ public class Server {
 	//static Gson jsonParser;
 	static final boolean REQUIRE_UNIQUE_CLIENTS = false;
 	HashMap<String, Thread> clients;
+	int maxClients;
 	int port;
 	private boolean hasBeenInitialized;
 	ServerSocket serverSocket = null;
 	String name;
-	private String address;
+	String address;
 
 	public Server(int port, String name) {
 		this.port = port;
@@ -28,6 +29,7 @@ public class Server {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+		maxClients=20;
 	}
 
 	public Server(int port) {

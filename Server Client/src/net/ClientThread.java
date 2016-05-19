@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import com.google.gson.Gson;
+
 public class ClientThread extends Thread {
 	static final int timeOut=3000;
 	protected Socket socket;
@@ -80,8 +82,16 @@ public class ClientThread extends Thread {
 			else header=InfoHeader.CLUSTER_REQUEST_DENIED;
 			ConnectionUtil.sendMessage(out, header,null);
 			break;
+		case REQUEST_SERVER_INFO:
+			System.out.println("Server Info Request Recieved, Responding");
+			ServerInfo info=new ServerInfo(server.address,server.name,server.clients.size(),server.maxClients);
+			ConnectionUtil.sendMessage(out, InfoHeader.SERVER_INFO_RESPONSE,new Gson().toJson(info));
+			break;
+		case SERVER_INFO_RESPONSE:
+			break;
 		default:
 			break;
+
 		}
 	}
 

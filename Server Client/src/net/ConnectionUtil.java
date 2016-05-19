@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
+
 public class ConnectionUtil {
 	public static String parseIpAddress(String read) {
 		String IPADDRESS_PATTERN = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
@@ -183,7 +185,7 @@ public class ConnectionUtil {
 		System.out.println("Trying to connect to " + hostName);
 		Socket s = new Socket();
 		s.connect(new InetSocketAddress(hostName, port), timeOut);
-		System.out.println("Connection Established, sending message " + hostName);
+		System.out.println("Connection Established, sending message "+msg.getFullMessageString()+" to host " + hostName);
 		PrintWriter out = new PrintWriter(s.getOutputStream());
 		BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		sendMessage(out, msg);
@@ -251,6 +253,20 @@ public class ConnectionUtil {
 			e.printStackTrace();
 		}
 		return broadcast;
+	}
+	public static ServerInfo getServerInfo(String hostName, int port, int timeOut, int msgTimeOut){
+		ServerInfo info = null;
+		try {
+			System.out.println("preparing to send server info request");
+			HeadedMessage msg = singleExchangeConnection(hostName, port, timeOut, msgTimeOut,
+					new HeadedMessage(InfoHeader.REQUEST_SERVER_INFO, null));
+			System.out.println("info request returned, validating message");
+			if (msg != null && msg.getHeader() == InfoHeader.SERVER_INFO_RESPONSE) {
+				info = new Gson().fromJson(msg.getHeadlessMessage(),ServerInfo.class);
+			}
+		} catch (IOException e) {
+		}
+		return info;
 	}
 
 }

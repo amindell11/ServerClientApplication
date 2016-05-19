@@ -110,7 +110,8 @@ public class ServerCreationPanel extends ComponentPanel {
     }// </editor-fold>                        
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {       
-		frame.enterScreen(new ServerConsole(frame, frame.createServer(jTextField1.getText())));
+		//frame.enterScreen(new ServerConsole(frame, frame.createServer(jTextField1.getText())));
+    	frame.createServer(jTextField1.getText());
         frame.createClient("0.0.0.0");
     }                                        
 	private void jSlider1StateChanged(ChangeEvent evt) {

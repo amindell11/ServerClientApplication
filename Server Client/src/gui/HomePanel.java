@@ -43,7 +43,7 @@ public class HomePanel extends ComponentPanel {
                createGameButtonActionPerformed(evt);
             }
         });
-        joinGameButton.setText("Join Game");
+        joinGameButton.setText("Join Game (coming soon!)");
         joinGameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 joinGameButtonActionPerformed(evt);
@@ -86,12 +86,12 @@ public class HomePanel extends ComponentPanel {
     }// </editor-fold>                        
 
     private void joinGameButtonActionPerformed(java.awt.event.ActionEvent evt) {              
-		frame.enterScreen(new LoadingServerPanel(frame));
-    }                                              
+		//frame.enterScreen(new LoadingServerPanel(frame));
+    }                
 
     private void directConnectButtonActionPerformed(java.awt.event.ActionEvent evt) { 
     	frame.enterScreen(new DirectConnect(frame));
-    }                                
+    } 
 	private void createGameButtonActionPerformed(ActionEvent evt) {
 		frame.enterScreen(new ServerCreationPanel(frame));
 	}
