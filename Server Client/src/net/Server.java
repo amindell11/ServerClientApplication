@@ -8,11 +8,10 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
-
 public class Server {
-	//static Gson jsonParser;
+	// static Gson jsonParser;
 	static final boolean REQUIRE_UNIQUE_CLIENTS = false;
-	HashMap<String, Thread> clients;
+	HashMap<String, ClientThread> clients;
 	int maxClients;
 	int port;
 	private boolean hasBeenInitialized;
@@ -21,15 +20,18 @@ public class Server {
 	String address;
 
 	public Server(int port, String name) {
+		this(port,name,Config.MAX_CLIENTS);
+	}
+	public Server(int port,String name,int maxClients){
 		this.port = port;
 		this.name = name;
+		this.maxClients = maxClients;
 		hasBeenInitialized = false;
 		try {
-			address=InetAddress.getLocalHost().getHostAddress();
+			address = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		maxClients=20;
 	}
 
 	public Server(int port) {
@@ -54,7 +56,7 @@ public class Server {
 	}
 
 	public void update() {
-		if(!hasBeenInitialized){
+		if (!hasBeenInitialized) {
 			System.err.println("please start the server before attempting to update it.");
 			return;
 		}
@@ -67,18 +69,28 @@ public class Server {
 		addClient(socket);
 	}
 
-	public boolean acceptClient(Socket socket, ClientThread clientThread) {
+	public HeadedMessage acceptClient(Socket socket, ClientThread clientThread) {
+		InfoHeader head;
+		String message;
 		InetAddress address = socket.getInetAddress();
 		if (clients.containsKey(address.getHostAddress()) && REQUIRE_UNIQUE_CLIENTS) {
 			closeClient(clientThread);
-			System.err.println("Error: Client at address " + address
-					+ " is already open. Please close any other clients and try again");
-			return false;
+			head=InfoHeader.CLUSTER_REQUEST_DENIED;
+			message = "Client at address " + address
+					+ " is already open. Please close any other clients and try again";
+			System.err.println("Error: "+message);
+		} else if (clients.size() >= maxClients) {
+			head=InfoHeader.CLUSTER_REQUEST_DENIED;
+			message="Server full";
+			System.err.println("Error: "+message);
+
 		} else {
+			head=InfoHeader.CLUSTER_REQUEST_ACCEPT;
+			message=null;
 			clients.put(clientThread.getClientAddress(), clientThread);
 			System.out.println("Welcome, " + address.getHostName());
-			return true;
 		}
+		return new HeadedMessage(head,message);
 
 	}
 
@@ -100,14 +112,26 @@ public class Server {
 			server.update();
 		}
 	}
-	public void close(){
+	public void announceToClients(HeadedMessage msg){
+		for(ClientThread s:clients.values()){
+			try {
+				ConnectionUtil.sendMessage(s.out, msg);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public String getAddress(){
+		return address;
+	}
+	public void close() {
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		HashMap<String, Thread> client=new HashMap<>();
-		hasBeenInitialized=false;
+		HashMap<String, Thread> client = new HashMap<>();
+		hasBeenInitialized = false;
 		ServerSocket serverSocket = null;
 	}
 }

@@ -7,6 +7,8 @@ package gui;
 
 import javax.swing.event.ChangeEvent;
 
+import net.Config;
+
 /**
  *
  * @author ari
@@ -45,7 +47,7 @@ public class ServerCreationPanel extends ComponentPanel {
 
         jLabel2.setText("Max Players");
 
-        jSlider1.setMaximum(16);
+        jSlider1.setMaximum(Config.MAX_CLIENTS);
         jSlider1.setPaintTicks(true);
         jSlider1.setSnapToTicks(true);
         jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -110,8 +112,7 @@ public class ServerCreationPanel extends ComponentPanel {
     }// </editor-fold>                        
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {       
-		//frame.enterScreen(new ServerConsole(frame, frame.createServer(jTextField1.getText())));
-    	frame.createServer(jTextField1.getText());
+		frame.enterScreen(new ServerConsolePanel(frame, frame.createServer(jTextField1.getText(), jSlider1.getValue())));
         frame.createClient("0.0.0.0");
     }                                        
 	private void jSlider1StateChanged(ChangeEvent evt) {

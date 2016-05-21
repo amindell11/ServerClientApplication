@@ -77,10 +77,7 @@ public class ClientThread extends Thread {
 		case CLUSTER_REQUEST_DENIED:
 			break;
 		case REQUEST_CLUSTER_MEMBERSHIP:
-			InfoHeader header=null;
-			if(server.acceptClient(socket,this))header=InfoHeader.CLUSTER_REQUEST_ACCEPT;
-			else header=InfoHeader.CLUSTER_REQUEST_DENIED;
-			ConnectionUtil.sendMessage(out, header,null);
+			ConnectionUtil.sendMessage(out, server.acceptClient(socket, this));
 			break;
 		case REQUEST_SERVER_INFO:
 			System.out.println("Server Info Request Recieved, Responding");

@@ -15,6 +15,9 @@ import net.ServerInfo;
  * @author amind_000
  */
 public class DirectConnect extends ComponentPanel {
+	/**
+	 * 
+	 */
 	private String address;
 	/**
 	 * Creates new form DirectConnect
@@ -170,9 +173,7 @@ public class DirectConnect extends ComponentPanel {
 		}
 	}
 	private void connect(String address){
-		frame.enterScreen(new ClientConsole(frame));
-		frame.createClient(address);
-
+		frame.enterScreen(new ClientConsolePanel(frame,frame.createClient(address)));
 	}
 	public void checkAddress(String address){
 		serverAddressLabel.setText(address);

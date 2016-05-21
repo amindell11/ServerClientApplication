@@ -31,12 +31,13 @@ public class Client {
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			ConnectionUtil.sendMessage(out, InfoHeader.REQUEST_CLUSTER_MEMBERSHIP, null);
-			if (ConnectionUtil.recieveMessage(in).getHeader().equals(InfoHeader.CLUSTER_REQUEST_ACCEPT)) {
+			HeadedMessage membershipStatusUpdate = ConnectionUtil.recieveMessage(in);
+			if (membershipStatusUpdate.getHeader().equals(InfoHeader.CLUSTER_REQUEST_ACCEPT)) {
 				connected = true;
 			} else {
 				connected = false;
 				System.err.println(
-						"Error: Server denied cluster join request. Please close any other clients on this computer");
+						"Error: Server denied cluster join request. Message: "+membershipStatusUpdate.getHeadlessMessage());
 			}
 		} catch (IOException e) {
 			System.err.println(

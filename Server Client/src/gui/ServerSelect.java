@@ -73,6 +73,7 @@ public class ServerSelect extends ComponentPanel {
 			}
 		
 		});
+		
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
 		this.setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,8 +93,7 @@ public class ServerSelect extends ComponentPanel {
 
 
 	private void JButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-		frame.enterScreen(new ClientConsole(frame));
-		frame.createClient(openServers.get(jList1.getSelectedValue()));
+		frame.enterScreen(new ClientConsolePanel(frame,frame.createClient(openServers.get(jList1.getSelectedValue()))));
 	}
 	
 	// Variables declaration - do not modify

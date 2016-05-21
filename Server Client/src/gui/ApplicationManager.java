@@ -29,18 +29,19 @@ public class ApplicationManager extends JFrame{
     	pack();
     	repaint();
     }
-	public Server createServer(final String serverName) {
-		final Server server=new Server(Config.PORT, serverName);;
+	public Server createServer(final String serverName, final int maxClients) {
+		final Server server=new Server(Config.PORT, serverName,maxClients);
+		if(server.init()){
 		Thread serverThread = new Thread(new Runnable() {
 			public void run() {
-				if (server.init()) {
 					while (true) {
 						server.update();
 					}
-				}
 			}
 		});
 		serverThread.start();
+		}
+		System.out.println(server);
 		return server;
 	}
 	public Client createClient(final String host){
