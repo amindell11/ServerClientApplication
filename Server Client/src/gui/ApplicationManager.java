@@ -50,16 +50,24 @@ public class ApplicationManager extends JFrame{
 			public void run() {
 				client.openConnection(host, Config.PORT);
 				while (client.isConnected()) {
-					//client.update();
+					client.update();
 				}
 			}
 		});
 		localClientThread.start();
 		return client;
 	}
-	public void reallocatePrint(TextArea textArea1) {
+	public void reallocatePrint(final TextArea textArea1) {
 		PrintStream printStream = new PrintStream(new CustomOutputStream(textArea1));
 		System.setOut(printStream);
 		System.setErr(printStream);
+		new Thread(new Runnable(){
+			@Override
+			public void run() {
+				System.out.println("hi");
+				textArea1.setCaretPosition(textArea1.getRows());	
+			}
+			
+		}).start();
 	}
 }

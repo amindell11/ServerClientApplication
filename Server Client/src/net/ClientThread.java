@@ -9,7 +9,7 @@ import java.net.Socket;
 import com.google.gson.Gson;
 
 public class ClientThread extends Thread {
-	static final int timeOut=3000;
+	static final int timeOut=10000000;
 	protected Socket socket;
 	InputStream inp;
 	BufferedReader brinp;
@@ -34,6 +34,7 @@ public class ClientThread extends Thread {
 		while (!isInterrupted()&&!out.checkError()) {
 			try {
 				if (brinp.ready()) {
+					System.out.println(true);
 					timeSinceCommed=0;
 					line = brinp.readLine();
 					if (line == null) {
@@ -41,7 +42,9 @@ public class ClientThread extends Thread {
 					}
 					handleMessage(line);
 				}else if(timeSinceCommed>timeOut){
+					System.out.println("Client "+socket+" timed out, probing");
 					ConnectionUtil.sendMessage(out, InfoHeader.PROBE,null);
+					timeSinceCommed=0;
 				}else{
 					timeSinceCommed++;
 				}
@@ -50,8 +53,10 @@ public class ClientThread extends Thread {
 				return;
 			}
 		}
+		System.out.println("Client"+socket+" closed. exiting thread");
 	}
 	public void handleMessage(String message) throws IOException{
+		System.out.println("Server recieved message, "+message);
 		HeadedMessage codedMsg=HeadedMessage.toHeadedMessage(message);
 		switch(codedMsg.header){
 		case DELETE_OBJECT:

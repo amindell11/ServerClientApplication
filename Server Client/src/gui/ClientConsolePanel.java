@@ -8,6 +8,8 @@ package gui;
 
 import java.io.IOException;
 
+import javax.swing.JComboBox;
+
 import net.Client;
 import net.ConnectionUtil;
 import net.HeadedMessage;
@@ -106,11 +108,11 @@ public class ClientConsolePanel extends ComponentPanel {
     }// </editor-fold>                        
 
     private void SendButtonActionPerformed(java.awt.event.ActionEvent evt) {       
-    /*	try {
-			ConnectionUtil.singleExchangeConnection("0.0.0.0", 8000, 1000, 1000,new HeadedMessage((InfoHeader)jComboBox1.getSelectedItem(),jTextField1.getText()));
+    	try {
+			ConnectionUtil.sendMessage(client.getOutput(), (InfoHeader) jComboBox1.getSelectedItem(),jTextField1.getText());
 		} catch (IOException e) {
 			e.printStackTrace();
-		}TODO*/
+		}
     }                                          
 
     private void ClearButtonActionPerformed(java.awt.event.ActionEvent evt) {      
