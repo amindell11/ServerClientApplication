@@ -119,7 +119,7 @@ public class ServerConsolePanel extends ComponentPanel {
     }// </editor-fold>                        
 
     private void SendButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
-    // TODO	server.announceToClients(new HeadedMessage((InfoHeader) jComboBox1.getSelectedItem(),jTextField1.getText()));
+     server.announceToClients(new HeadedMessage((InfoHeader) jComboBox1.getSelectedItem(),jTextField1.getText()));
     }                                          
 
     private void ClearButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            

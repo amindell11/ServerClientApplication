@@ -96,7 +96,6 @@ public class Server {
 
 	public void addClient(Socket socket) {
 		ClientThread clientThread = new ClientThread(socket, this);
-		System.out.println("Connection established with a client");
 		clientThread.start();
 	}
 
@@ -114,6 +113,7 @@ public class Server {
 	}
 	public void announceToClients(HeadedMessage msg){
 		for(ClientThread s:clients.values()){
+			System.out.println("sending message "+msg.getFullMessageString()+" to client "+s.socket.getPort());
 			try {
 				ConnectionUtil.sendMessage(s.out, msg);
 			} catch (IOException e) {

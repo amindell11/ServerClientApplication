@@ -70,7 +70,9 @@ public class Client {
 		long time = System.nanoTime();
 		String update = null;
 		if ((update = in.readLine()) != null) {
+			if(HeadedMessage.toHeadedMessage(update).getHeader()!=InfoHeader.PROBE){
 			System.out.println(update);
+			}
 		}
 		ping = System.nanoTime() - time;
 		ping /= 1000000;

@@ -61,13 +61,5 @@ public class ApplicationManager extends JFrame{
 		PrintStream printStream = new PrintStream(new CustomOutputStream(textArea1));
 		System.setOut(printStream);
 		System.setErr(printStream);
-		new Thread(new Runnable(){
-			@Override
-			public void run() {
-				System.out.println("hi");
-				textArea1.setCaretPosition(textArea1.getRows());	
-			}
-			
-		}).start();
 	}
 }

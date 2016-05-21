@@ -30,11 +30,11 @@ public class ClientThread extends Thread {
 	}
 
 	public void run() {
+		System.out.println("Established connection with client "+socket.getPort());
 		String line;
 		while (!isInterrupted()&&!out.checkError()) {
 			try {
 				if (brinp.ready()) {
-					System.out.println(true);
 					timeSinceCommed=0;
 					line = brinp.readLine();
 					if (line == null) {
@@ -42,7 +42,7 @@ public class ClientThread extends Thread {
 					}
 					handleMessage(line);
 				}else if(timeSinceCommed>timeOut){
-					System.out.println("Client "+socket+" timed out, probing");
+					//System.out.println("Client "+socket.getPort()+" timed out, probing");
 					ConnectionUtil.sendMessage(out, InfoHeader.PROBE,null);
 					timeSinceCommed=0;
 				}else{
@@ -53,10 +53,10 @@ public class ClientThread extends Thread {
 				return;
 			}
 		}
-		System.out.println("Client"+socket+" closed. exiting thread");
+		System.out.println("Client"+socket.getPort()+" closed. exiting thread");
 	}
 	public void handleMessage(String message) throws IOException{
-		System.out.println("Server recieved message, "+message);
+		System.out.println("Server recieved message, "+message+" from client "+socket.getPort());
 		HeadedMessage codedMsg=HeadedMessage.toHeadedMessage(message);
 		switch(codedMsg.header){
 		case DELETE_OBJECT:
