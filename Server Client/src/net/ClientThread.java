@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -16,6 +17,7 @@ public class ClientThread extends Thread {
 	PrintWriter out;
 	Server server;
 	int timeSinceCommed;
+	ObjectInputStream ois;
 
 	public ClientThread(Socket clientSocket,Server server) {
 		this.socket = clientSocket;
@@ -62,6 +64,13 @@ public class ClientThread extends Thread {
 		case DELETE_OBJECT:
 			break;
 		case NEW_OBJECT:
+			System.out.println("recieved object with tag "+codedMsg.getHeadlessMessage());
+			try {
+				ois=new ObjectInputStream(inp);
+				System.out.println(ois.readObject());
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 			break;
 		case PROBE:
 			System.out.println("Probe Recieved, Responding");

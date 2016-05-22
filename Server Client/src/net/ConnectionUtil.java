@@ -2,7 +2,10 @@ package net;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -32,7 +35,11 @@ public class ConnectionUtil {
 		}
 
 	}
-
+	public static void sendObject(OutputStream out,String msg,Object obj) throws IOException{
+		sendMessage(out,InfoHeader.NEW_OBJECT,msg);
+		ObjectOutputStream oos=new ObjectOutputStream(out);
+		oos.writeObject(obj);
+	}
 	public static ArrayList<String> getAllIPs() {
 		ArrayList<String> ip = new ArrayList<>();
 		for (int x = 0; x < 40; x++) {
@@ -208,7 +215,12 @@ public class ConnectionUtil {
 		}
 		return name;
 	}
-
+	public static HeadedMessage recieveMessage(InputStream in,long timeOut) throws IOException{
+		return recieveMessage(new BufferedReader(new InputStreamReader(in)),timeOut);
+	}
+	public static HeadedMessage recieveMessage(InputStream in) throws IOException{
+		return recieveMessage(new BufferedReader(new InputStreamReader(in)));
+	}
 	public static HeadedMessage recieveMessage(BufferedReader in) throws IOException {
 		return recieveMessage(in, Integer.MAX_VALUE);
 	}
@@ -223,7 +235,12 @@ public class ConnectionUtil {
 		System.out.println("recieved Message: " + msg);
 		return HeadedMessage.toHeadedMessage(msg);
 	}
-
+	public static void sendMessage(OutputStream out,HeadedMessage message) throws IOException{
+		sendMessage(new PrintWriter(out),message);
+	}
+	public static void sendMessage(OutputStream out,InfoHeader msgCode,String msg) throws IOException{
+		sendMessage(new PrintWriter(out),msgCode,msg);
+	}
 	public static void sendMessage(PrintWriter out, HeadedMessage message) throws IOException {
 		out.println(message.getFullMessageString());
 		out.flush();

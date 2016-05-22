@@ -3,6 +3,7 @@ package net;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -10,6 +11,15 @@ public class Client {
 	static final boolean sameComputer = false;
 
 	String hostName;
+	public OutputStream getOut() {
+		try {
+			return socket.getOutputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	boolean connected;
 	int portNumber;
 	Socket socket;
